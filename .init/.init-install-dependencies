@@ -1,0 +1,4 @@
+{
+    "command": "./gradlew dependencies",
+    "working_directory": "/home/kavia/workspace/code-generation/quickride-booking-platform-45234-45243/taxi_booking_backend"
+}
