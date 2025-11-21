@@ -15,11 +15,13 @@ public class Booking {
     private Long id;
 
     // User who requested the ride
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // Driver assigned (nullable until assigned)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_id")
     private Driver driver;
 
     @NotBlank
@@ -34,9 +36,10 @@ public class Booking {
     @Column(nullable = false)
     private BookingStatus status = BookingStatus.REQUESTED;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
+    @Column(name = "updated_at")
     private Instant updatedAt = Instant.now();
 
     // Constructors
@@ -49,6 +52,12 @@ public class Booking {
         this.pickupLocation = pickupLocation;
         this.dropoffLocation = dropoffLocation;
         this.status = status;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt;
     }
 
     @PreUpdate

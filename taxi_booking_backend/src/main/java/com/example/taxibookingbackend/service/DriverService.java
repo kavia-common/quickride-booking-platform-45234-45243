@@ -30,19 +30,19 @@ public class DriverService {
 
     // PUBLIC_INTERFACE
     public Driver createDriver(DriverDtos.CreateDriverRequest req) {
-        /** Create a new driver with vehicle. */
+        /** Create a new driver with vehicle. Persist vehicle first to have a managed entity, then link in Driver. */
         Vehicle v = new Vehicle();
         v.setMake(req.vehicleMake);
         v.setModel(req.vehicleModel);
         v.setPlateNumber(req.plateNumber);
-        vehicleRepository.save(v);
+        Vehicle managedVehicle = vehicleRepository.save(v);
 
         Driver d = new Driver();
         d.setName(req.name);
         d.setStatus(DriverStatus.AVAILABLE);
-        d.setVehicle(v);
+        d.setVehicle(managedVehicle);
         Driver saved = driverRepository.save(d);
-        log.info("Created driver id={}", saved.getId());
+        log.info("Created driver id={} with vehicle id={}", saved.getId(), managedVehicle.getId());
         return saved;
     }
 

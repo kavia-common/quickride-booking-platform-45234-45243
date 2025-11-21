@@ -21,7 +21,10 @@ public class Driver {
     @Column(nullable = false)
     private DriverStatus status = DriverStatus.AVAILABLE;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    // A driver owns exactly one vehicle in this simple model.
+    // We avoid CascadeType.PERSIST on existing vehicles to prevent detached entity issues.
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "vehicle_id", nullable = false, unique = true)
     private Vehicle vehicle;
 
     // Constructors
